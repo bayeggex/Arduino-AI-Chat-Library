@@ -11,6 +11,9 @@
 
 </div>
 
+![tenor](https://github.com/bayeggex/Arduino-AI-Chat-Library/assets/79448667/ae4451d4-2c67-43bd-b8c7-e378960c33d1)
+
+
 AIChatbot is a versatile Arduino library for integrating various AI chatbot APIs. It supports connecting to OpenAI's ChatGPT, Hugging Face Api's.
 
 ## ✨ Features
