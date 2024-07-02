@@ -52,15 +52,9 @@ void setup() {
     
     // Set API keys
     chatbot.setKey("YOUR_CHATGPT_API_KEY", "chatgpt");
-    chatbot.setKey("YOUR_HUGGING_FACE_API_KEY", "huggingface");
 
     //Begin WiFi connection
-    WiFi.begin("SSID", "PASSWORD");
-      while (WiFi.status() != WL_CONNECTED) {
-         delay(1000);
-         Serial.println("Connecting to WiFi...");
-    }
-    Serial.println("Connected to WiFi");
+    chatbot.connectWiFi("YOUR_SSID", "YOUR_PASSWORD");
     
     // Select AI and optionally specify version
     chatbot.selectAI("chatgpt", "gpt-3.5-turbo");
