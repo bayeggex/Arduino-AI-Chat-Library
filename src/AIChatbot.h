@@ -5,6 +5,7 @@
 
 #ifdef ESP32
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
@@ -15,7 +16,7 @@ class AIChatbot {
 public:
     AIChatbot();
     void begin(long baudRate);
-    void connectWiFi(const char* ssid, const char* password);
+    bool connectWiFi(const char* ssid, const char* password, unsigned long timeoutMs = 10000);
     void update();
     void setKey(const String& key, const String& aiName);
     void selectAI(const String& aiName, const String& aiVersion = "gpt-3.5-turbo");
