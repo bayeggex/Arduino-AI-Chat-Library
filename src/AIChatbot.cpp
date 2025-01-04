@@ -35,6 +35,13 @@ bool AIChatbot::validateKeys() {
         Serial.println("Error: Hugging Face API key is not set.");
         return false;
     }
+
+    if (selectedAI.isEmpty()) {
+        Serial.println("Error: No AI selected.");
+        return false;
+
+    }
+
     return true;
 }
 
@@ -104,7 +111,9 @@ String AIChatbot::sendToChatGPT(const String& message) {
     }
 
     String url = "https://api.openai.com/v1/chat/completions";
-    String payload = "{\"model\": \"" + selectedAIVersion + "\", \"messages\": [{\"role\": \"user\", \"content\": \"" + message + "\"}]}";
+    String sanitizedMessage = sanitizeInput(message);
+    String payload = "{\"model\": \"" + selectedAIVersion + "\", \"messages\": [{\"role\": \"user\", \"content\": \"" + sanitizedMessage + "\"}]}";
+
 
     return makeHttpRequest(url, payload, chatGPTApiKey);
 }
@@ -134,13 +143,13 @@ String AIChatbot::makeHttpRequest(const String& url, const String& payload, cons
     int httpResponseCode = http.POST(payload);
     String response = "";
 
-    if (httpResponseCode > 0) {
-        response = http.getString();
-        Serial.printf("HTTP Response code: %d\nResponse body: %s\n", httpResponseCode, response.c_str());
+    if (httpResponseCode > 0 && httpResponseCode < 300) {
+    response = http.getString();
+    Serial.printf("HTTP Response code: %d\nResponse body: %s\n", httpResponseCode, response.c_str());
     } else {
-        response = "HTTP POST failed: " + String(http.errorToString(httpResponseCode).c_str());
-        Serial.println(response);
-        Serial.printf("Payload: %s\n", payload.c_str());
+    response = "HTTP POST failed. Code: " + String(httpResponseCode);
+    Serial.println(response);
+    Serial.printf("Payload: %s\n", payload.c_str());
     }
 
     http.end();
