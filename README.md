@@ -48,15 +48,19 @@ Before using the AIChatbot library, you need to set your API keys for the respec
 AIChatbot chatbot;
 
 void setup() {
-    Serial.begin(115200);
+    chatbot.begin(115200);
     
     // Set API keys
     chatbot.setKey("YOUR_CHATGPT_API_KEY", "chatgpt");
+    chatbot.setKey("YOUR_HUGGING_FACE_API_KEY", "huggingface");
 
-    //Begin WiFi connection
-    chatbot.connectWiFi("YOUR_SSID", "YOUR_PASSWORD");
+    // Connect to WiFi
+    if (!chatbot.connectWiFi("SSID", "PASSWORD")) {
+        Serial.println("Failed to connect to WiFi");
+        while (true); // Halt if WiFi connection fails
+    }
     
-    // Select AI and optionally specify version
+    // Select AI service and optionally specify version
     chatbot.selectAI("chatgpt", "gpt-3.5-turbo");
 }
 
