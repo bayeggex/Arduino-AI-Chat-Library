@@ -29,21 +29,19 @@ Before using the AI Chat Library, you need to set your API keys for the respecti
 AIChatbot chatbot;
 
 void setup() {
-    Serial.begin(115200);
+    chatbot.begin(115200);
     
     // Set API keys
     chatbot.setKey("YOUR_CHATGPT_API_KEY", "chatgpt");
     chatbot.setKey("YOUR_HUGGING_FACE_API_KEY", "huggingface");
 
-    // Begin WiFi connection
-    WiFi.begin("SSID", "PASSWORD");
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(1000);
-        Serial.println("Connecting to WiFi...");
+    // Connect to WiFi
+    if (!chatbot.connectWiFi("SSID", "PASSWORD")) {
+        Serial.println("Failed to connect to WiFi");
+        while (true); // Halt if WiFi connection fails
     }
-    Serial.println("Connected to WiFi");
     
-    // Select AI and optionally specify version
+    // Select AI service and optionally specify version
     chatbot.selectAI("chatgpt", "gpt-3.5-turbo");
 }
 
@@ -54,6 +52,28 @@ void loop() {
 ```
 
 ### 📄Functions
+
+### `begin(long baudRate)`
+
+- **Description**: Initializes the serial communication with the specified baud rate.
+- **Parameters**:
+  - `baudRate`: The baud rate for serial communication (e.g., 115200).
+- **Example**:
+  ```cpp
+  chatbot.begin(115200);
+
+#### `connectWiFi(const char* ssid, const char* password, unsigned long timeoutMs = 10000)`
+
+- **Description**: Connects to a WiFi network with the given SSID and password.
+- **Parameters**:
+  - `ssid`: WiFi SSID(Name).
+  - `password`: WiFi password.
+  - `timeoutMs`:  (optional): Connection timeout in milliseconds (default is 10 seconds).
+- **Example**:
+  ```cpp
+    if (!chatbot.connectWiFi("YourSSID", "YourPassword")) {
+      Serial.println("WiFi connection failed");
+    }
 
 #### `selectAI(const String& aiName, const String& aiVersion = "gpt-3.5-turbo")`
 
@@ -75,7 +95,7 @@ void loop() {
   ```cpp
   chatbot.setKey("YOUR_CHATGPT_API_KEY", "chatgpt");
 
-#### `send(const String& message)`
+#### `getResponse(const String& message)`
 
 - **Description**: Sends a message to the selected AI service manually.
 - **Parameters**:
@@ -93,3 +113,102 @@ void loop() {
   void loop() {
     chatbot.update();
   }
+
+### `sanitizeInput(const String& input)`
+
+- **Description**: Sanitizes the input string to prevent issues with special characters.
+- **Parameters**:
+  - `input`:The input string to sanitize.
+
+
+### 🔧 Internal Functions (Private)
+
+These functions are used internally by the library and are not intended to be called directly by users.
+
+`sendToChatGPT(const String& message)`
+
+- Sends a message to the OpenAI ChatGPT API and returns the response.
+
+`sendToHuggingFace(const String& message)`
+
+- Sends a message to the Hugging Face API and returns the response.
+
+`makeHttpRequest(const String& url, const String& payload, const String& apiKey)`
+
+-Makes an HTTP POST request to the specified URL with the given payload and API key.
+
+### 📚 Header File (AIChatbot.h)
+
+```h
+#ifndef AI_CHATBOT_H
+#define AI_CHATBOT_H
+
+#include <Arduino.h>
+
+#if defined(ESP32)
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <HTTPClient.h>
+#define PLATFORM_NAME "ESP32"
+#elif defined(ESP8266)
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#define PLATFORM_NAME "ESP8266"
+#endif
+
+class AIChatbot {
+public:
+    AIChatbot();
+    bool connectWiFi(const char* ssid, const char* password, unsigned long timeoutMs = 10000);
+    bool validateKeys();
+    void begin(long baudRate);
+    void update();
+    void setKey(const String& key, const String& aiName);
+    void selectAI(const String& aiName, const String& aiVersion = "gpt-3.5-turbo");
+    String sanitizeInput(const String& input);
+    String getResponse(const String& message);
+
+private:
+    String chatGPTApiKey;
+    String huggingFaceApiKey;
+    String selectedAI;
+    String selectedAIVersion;
+    String sendToChatGPT(const String& message);
+    String sendToHuggingFace(const String& message);
+    String makeHttpRequest(const String& url, const String& payload, const String& apiKey);
+};
+
+#endif // AI_CHATBOT_H
+```
+
+### 🔧 Example Sketches
+
+`AITranslation.ino`: Demonstrates translation capabilities using the library.
+
+`ChatGPT.ino`: Example of integrating with ChatGPT for general conversation.
+
+`DataTest.ino`: Verifies communication and tests various AI responses.
+
+`HuggingFace.ino`: Shows usage with Hugging Face models.
+
+`QuestionAnswering.ino`: Example for question-answering tasks.
+
+`TextGeneration.ino`: Demonstrates text generation capabilities.
+
+`TextSummarization.ino`: Example for summarizing input text.
+
+### 📈 Roadmap
+
+- Add support for more AI services.
+
+- Improve error handling and debugging tools.
+
+- Enhance documentation with more detailed examples.
+
+- Voice & Image Cration.
+
+### 🛠️ Support
+
+For [issues](https://github.com/bayeggex/Arduino-AI-Chat-Library/issues/new), [feature requests](https://github.com/bayeggex/Arduino-AI-Chat-Library/issues/new), or [Contributions](https://github.com/bayeggex/Arduino-AI-Chat-Library/pulls), please visit the [GitHub repository](https://github.com/bayeggex/Arduino-AI-Chat-Library).
+
+This library is maintained by [BayEggex](https://github.com/bayeggex). Contributions are welcome!
