@@ -5,9 +5,10 @@
 
 ![GitHub](https://img.shields.io/github/license/bayeggex/Arduino-AI-Chat-Library)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/bayeggex/Arduino-AI-Chat-Library?include_prereleases)
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/bayeggex/library/AIChatBot.svg)](https://registry.platformio.org/libraries/bayeggex/AIChatBot)
+[![arduino-library-badge](https://www.ardu-badge.com/badge/AIChatBot.svg?)](https://www.ardu-badge.com/AIChatBot)
 ![GitHub last commit](https://img.shields.io/github/last-commit/bayeggex/Arduino-AI-Chat-Library)
 ![GitHub issues](https://img.shields.io/github/issues-raw/bayeggex/Arduino-AI-Chat-Library)
-![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/bayeggex/Arduino-AI-Chat-Library)
 
 </div>
 
